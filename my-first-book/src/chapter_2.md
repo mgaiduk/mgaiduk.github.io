@@ -1,4 +1,4 @@
-# Chapter 2. The data
+# Chapter 2. First glance at the data
 To make the code reproducible, we will be using public dataset. I've decided to go with Movielens (https://grouplens.org/datasets/movielens/), although it is not available in bigquery. We will upload it to bq by hand.
 ## Getting movielens data
 At the time of writing, movielens data is available to download at https://grouplens.org/datasets/movielens/.   
@@ -49,14 +49,14 @@ Let's see how we can get them from BQ to gcs.
 
 Native extraction API, available through "export" tab in BQ UI, or `bq extract` command line tool, has following formats: CSV, NEWLINE_DELIMITED_JSON, AVRO, PARQUET. Avro and Parquet create binary files that could not be parsed from Tensorflow with the dataset API functions that we agreed on. And there is no TFRecord here - we will have to resort to Dataflow Templates to do that ) But that is to be expected - TFRecord is a low-popularity, very specific format, and its not like Tensorflow and Bigquery were made by the same company.  
 
-We are left with CSV and JSON. CSV is actually pretty good, I've seen it used at large scale in production. Its downside is that it is a text format, which will bloat the size of numbers. It is a "plain" format, which won't work out of the box for arrays or nested structures. Upside is that it doesn't store anything extra, like labels per each record (json and tfrecord both do that). It is also human-readable, so it will be possible to check the data out with your own eyes. 
+We are left with CSV and JSON. CSV is actually pretty good, I've seen it used at large scale in production. Its downside is that it is a text format, which will bloat the size of numbers. It is a "plain" format, which won't work out of the box for arrays or nested structures. Upside is that it doesn't store anything extra, like labels per each record (json and tfrecord both do that). It is also human-readable, so it will be possible to check the data out with your own eyes.  
 JSON is a bit more bloated, with labels per each row; but it makes it possible to store nested structures and arrays.  
 
 Here is how to export data from bq to gcs:
 ```
 bq extract --noprint_header --destination_format CSV --compression GZIP mgaiduk.ratings "gs://mgaiduk-us-central1/ratings/csv_gzip/part*"
 ```
-There are some interesting details here. First of all, here we are using "native" export utility, which has access to private datastore api's not available for general public. It is faster and cheaper then the alternatives (like dataflow), takes mere minutes for petabyte datasets. However, using this way limits us to format options described above - CSV or JSON.  
+There are some interesting details here. First of all, here we are using "native" export utility, which has access to private datastore api not available to general public. It is faster and cheaper then the alternatives (like dataflow), takes mere minutes for petabyte datasets. However, using this way limits us to format options described above - CSV or JSON.  
 
 Exported files represent a sharded gcs file: 
 ```
@@ -80,8 +80,11 @@ Finally, as can be seen from the bucket name, it is located in a specific region
 
 ### BQ to GCS TFRecords using dataflow
 Another alternative to native BQ export is to use Dataflow. The idea is simple: launch a bunch of dataflow workers that will grab data from Bigquery, convert to a desired format, and write it to GCS.  
+
 Unlike native export, this doesn't allow workers to use private storage API, so the export will be much slower. There is also a HUGE overhead in time and costs for launching the dataflow job: you have to wait for all the workers to be created and start doing their job; you will not receive any feedback in case something goes wrong, and will have to wait for all the workers to start up, do some retries, and then fail. Typically, on a petabyte of data, the job takes a few hours, and if there are errors in the configuration, the job will fail within half an hour. You also have to pay for worker cpu and other excess resources, which makes it much more costly then native BQ export.  
 The actual export format here can be anything we want, but Google provides a set of templates with some of the most popular formats already suported, including TFRecords: https://cloud.google.com/dataflow/docs/guides/templates/provided-batch.   
+I launch it from the UI, because I just couldn't understand how to write an SQL query in a parameter list in command line and not have it complain about syntax. Sadly, Google does not provide any examples on how to do that.  
+
 Another big problem with this approach is that it is error-prone. If one of the fields is nullable in the table, and your input data pipeline doesn't expect that - you will spend an entire day (and quite a few hundred bucks!) collecting the data only to learn that you have to fix the problem and do it all over again. If your table format is not supported by the template (say, you have nested structures), your job will run for half an hour before failing. So my advice here is - first test everything, including model training in the final setup - on a sample of data, say, first 100k rows, then collect the entire thing.  
 
 TFRecordDataset and TFRecords were designed specifically for Tensorflow. It is a protobuf-based, binary format, which means that there is no bloat from textual representation, and parsing is faster. However, TFRecords save labels for every row, as well as some protobuf metadata. For our example - userId,movieId,rating,timestamp - this makes TFRecord dataset be actually bigger in size then CSV. We shall see if easier parsing makes it worthwile.
@@ -97,8 +100,9 @@ for line in dataset:
     break
 print(line)
 ```
-`tf.Tensor(b'70,3948,2,1255219128', shape=(), dtype=string)`
-As promiseed, parsing the data is very easy. Output is the dataset with 1 row yielding one csv string tensor. We will need to parse it further to actually use it in our model; but it is already a tensor, so every parsing done on it will be optimized with Tensorflow utilities.
+`tf.Tensor(b'70,3948,2,1255219128', shape=(), dtype=string)`  
+
+As promiseed, parsing the data is very easy. We do the parsing in native Tensorflow function, so no slow python for loops. Output is the dataset with 1 row yielding one csv string tensor. We will need to parse it further to actually use it in our model; but it is already a tensor, so every parsing done on it will be optimized with Tensorflow utilities.
 ```
 # tfrecord version
 dataset2 = tf.data.TFRecordDataset(["gs://mgaiduk-us-central1/ratings/tfrecord/train/output-00000-of-00012.tfrecord"])
