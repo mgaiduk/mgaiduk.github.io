@@ -177,8 +177,6 @@ class DatasetReader:
             features = {}
             for feature in self.config.model.features:
                 t = parsed_features[feature.name]
-                if feature.hash:
-                    t = tf.strings.to_hash_bucket(t, feature.vocab_size)
                 features[feature.name] = t
             labels = {
                 "label": parsed_features[self.config.label]
