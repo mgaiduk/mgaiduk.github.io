@@ -105,6 +105,6 @@ Important to note that we do `prefetch` in the very end, making sure we prefetch
 
 1. dataset.interleave got 2 new parameters: num_parallel_calls and cycle_length. They both are required for parallelism because of how parallel computing works in `interleave` calls. This is the second crucial step in making sure your input pipeline is not a bottleneck. If your parsing is done on just one core, having prefetch will not be enough to fetch new data with enough speed. Parallel dataset execution makes sure that you give enough cores for the task  
 
-1. `deterministic=False` in `interleave`. In theory, this might speed up input data pipeline, because it allows dataset executor to output results from multiple parallel calls as soon as they are ready. However, if you have prefetch and parallel calls, you probably won't notice latency differences.  
+1. `deterministic=False` in `interleave`. In theory, this might speed up input data pipeline, because it allows dataset executor to output results from multiple parallel calls as soon as they are ready. However, if you have prefetch and parallel calls, you probably won't notice latency differences. Important thing is, if you are doing distributed training, to have sharding done BEFORE any non-determinism in the pipeline, otherwise the shards will train on random, partially intersecting parts of data. 
 
 Code for this chapter is available as a [jupyter notebook](https://github.com/mgaiduk/mgaiduk.github.io/blob/main/my-first-book/src/code/chapter3/proper_dataset_parsing.ipynb).
