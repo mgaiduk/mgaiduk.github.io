@@ -6,3 +6,4 @@
 - [Chapter 4. The model](./chapter_4.md)
 - [Chapter 5. Tidying up](./chapter_5.md)
 - [Chapter 6. Training on TPU](./chapter_6.md)
+- [Chapter 7. LazyAdam, or some hacks for training speed](./chapter_7.md)
