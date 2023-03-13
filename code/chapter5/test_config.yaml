@@ -1,0 +1,10 @@
+batch_size: 1024
+dataset_features:
+    label:
+        type: "int"
+    userId:
+        type: "int"
+    movieId:
+        type: "float"
+    timestamp:
+        type: "int"

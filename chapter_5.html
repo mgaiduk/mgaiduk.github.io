@@ -1,0 +1,569 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 5. Tidying up - Tensorflow for recsys</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1. What is this book about</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> Chapter 2. First glance at the data</a></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Chapter 3. Proper input pipeline and the model</a></li><li class="chapter-item expanded "><a href="chapter_4.html"><strong aria-hidden="true">4.</strong> Chapter 4. The model</a></li><li class="chapter-item expanded "><a href="chapter_5.html" class="active"><strong aria-hidden="true">5.</strong> Chapter 5. Tidying up</a></li><li class="chapter-item expanded "><a href="chapter_6.html"><strong aria-hidden="true">6.</strong> Chapter 6. Training on TPU</a></li><li class="chapter-item expanded "><a href="chapter_7.html"><strong aria-hidden="true">7.</strong> Chapter 7. LazyAdam, or some hacks for training speed</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Tensorflow for recsys</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-5-tidying-up"><a class="header" href="#chapter-5-tidying-up">Chapter 5. Tidying up</a></h1>
+<p>In the last chapter, we've written a collaborative filtering models with embedding lookup layer and dot product. We tried training it on cpu with a little bit of data.<br />
+Before we scale that up to big datasets, tpus, and do some serious experimenting, we have some stuff in our code that we need to clear out:</p>
+<ul>
+<li>We have all our code in one file - jupyter notebook. We want to split it into several modules - model code, dataset code; a proper training script that can be run from command line; helper jupyter notebook that could access dataset and model modules - this is useful for development, when you want to actually load a bit of data, instantiate the model, look into inputs/outputs and try new stuff out interactively</li>
+<li>We have a lot of constants in our code. We want to move it to command-line arguments and/or config. This include training/input pipeline options (paths, iterations, batch_size etc), input feature disposition (it is likely that at some point in the future we will be training models with different fields), model configuration (more layers, embedding sizes, vocabulary sizes)</li>
+<li>We need to save the model, as well as some intermediate metrics, learning history, run parameters and stuff like that
+Let s go ahead and fix them!</li>
+</ul>
+<h2 id="code-configuration-config-and-command-line"><a class="header" href="#code-configuration-config-and-command-line">Code configuration: config and command line</a></h2>
+<p>There is no one answer to which one is better - config or command line. Most of my career I've used a c++ tool that parsed all input options for command line. Command line arguments make it easy to modify runs and experiments; configs allow more structured, nested definitions; configs are usually commited to Github, which helps make experiments more reproducible.<br />
+Here, we will be using configs. I've opted for the <code>yaml</code> format, it is quite clean and easy to read and write. This is how it is supposed to work:</p>
+<pre><code>%%writefile test_config.yaml
+batch_size: 1024
+dataset_features:
+    label:
+        type: &quot;int&quot;
+    userId:
+        type: &quot;int&quot;
+    movieId:
+        type: &quot;float&quot;
+    timestamp:
+        type: &quot;int&quot;
+</code></pre>
+<pre><code>import yaml
+config = yaml.safe_load(open(&quot;test_config.yaml&quot;, &quot;r&quot;))
+config
+</code></pre>
+<pre><code>{'batch_size': 1024,
+ 'dataset_features': {'label': {'type': 'int'},
+  'userId': {'type': 'int'},
+  'movieId': {'type': 'float'},
+  'timestamp': {'type': 'int'}}}
+
+</code></pre>
+<p><code>yaml</code> lib loads an arbitrary yaml file into a nested python structure with dicts/lists.<br />
+Here is how the full config shoud look like:</p>
+<pre><code>%%writefile config.yaml
+epochs: 2
+global_batch_size: 8192
+shuffle_buffer: 10
+train_rows: 65536
+trainval_rows: 8192
+eval_rows: 65536
+compression: &quot;GZIP&quot;
+train_path: &quot;gs://mgaiduk-us-central1/ratings/csv_gzip/part*&quot;
+validate_path: &quot;gs://mgaiduk-us-central1/ratings_validate/csv_gzip/part*&quot;
+save_model_path: &quot;gs://mgaiduk-us-central1/models/model1&quot;
+cycle_length: 8
+dataset_features:
+    userId:
+        type: &quot;string&quot;
+    movieId:
+        type: &quot;string&quot;
+    label:
+        type: &quot;int&quot;
+    timestamp:
+        type: &quot;int&quot;
+label: label
+model:
+    learning_rate: 0.01
+    features:
+        userId:
+            hash: true
+            vocab_size: 25000000
+            embedding_dim: 16
+            belongs_to: user
+        movieId:
+            hash: true
+            vocab_size: 5000000
+            embedding_dim: 16
+            belongs_to: movie
+</code></pre>
+<p>Note that here, we describe the features twice: once to properly parse the input, once - to specify the model. This sounds redundant, but might be handy when you are running different models on the same dataset, and not all of the models use all of the features.<br />
+We might have more features in the future (like user country, movie genre, etc), but the final layer of the model will still be a dot product between two embeddings. Extra features will have to belong either to the user part of the model, or to the movie part. This architecture is called &quot;late binding&quot; and is useful for future use at runtime: there are data structures that allow doing fast search for K Nearest Neighbors (KNN) in such a case. Examples are HNSW, SCANN. Typically, movie embeddings are baked into the index, while user embeddings are fetched on-the-fly.</p>
+<p>I'd rather use some proper class fields than dictionary keys, so I wrote a parser for this config:</p>
+<pre><code>%%writefile config.py
+import yaml
+
+class DatasetFeature:
+    def __init__(self, feature_name, dic):
+        self.name = feature_name
+        self.type = dic[&quot;type&quot;]
+    
+    def __repr__(self):
+        return &quot;DatasetFeature: &quot; + str(self.__dict__)
+
+class Feature:
+    def __init__(self, feature_name, dic):
+        self.hash = False
+        if &quot;hash&quot; in dic:
+            self.hash = dic[&quot;hash&quot;]
+            if self.hash:
+                assert &quot;vocab_size&quot; in dic
+                self.vocab_size = dic[&quot;vocab_size&quot;]
+        self.embedding_dim = dic[&quot;embedding_dim&quot;]
+        self.name = feature_name
+        self.belongs_to = dic[&quot;belongs_to&quot;]
+
+    def __repr__(self):
+        return &quot;Feature: &quot; + str(self.__dict__)
+        
+class Model:
+    def __init__(self, dic):
+        self.learning_rate = dic[&quot;learning_rate&quot;]
+        self.features = []
+        for feature_name, feature_dic in dic[&quot;features&quot;].items():
+            self.features.append(Feature(feature_name, feature_dic))
+
+    def __repr__(self):
+        return &quot;Model: &quot; + str(self.__dict__)
+
+class Config:
+    def __init__(self, path):
+        dic = yaml.safe_load(open(path, 'r'))
+        self.epochs = dic[&quot;epochs&quot;]
+        self.compression = dic[&quot;compression&quot;]
+        self.global_batch_size = dic[&quot;global_batch_size&quot;]
+        self.label = dic[&quot;label&quot;]
+        self.shuffle_buffer = dic[&quot;shuffle_buffer&quot;]
+        self.train_path = dic[&quot;train_path&quot;]
+        self.validate_path = dic[&quot;validate_path&quot;]
+        self.save_model_path = dic[&quot;save_model_path&quot;]
+        self.train_rows = dic[&quot;train_rows&quot;]
+        self.trainval_rows = dic[&quot;trainval_rows&quot;]
+        self.eval_rows = dic[&quot;eval_rows&quot;]
+        self.model = Model(dic[&quot;model&quot;])
+        self.dataset_features = []
+        self.cycle_length = dic[&quot;cycle_length&quot;]
+        for feature_name, feature_dic in dic[&quot;dataset_features&quot;].items():
+            self.dataset_features.append(DatasetFeature(feature_name, feature_dic))
+       
+    def __repr__(self):
+        return &quot;Config: &quot; + str(self.__dict__)
+</code></pre>
+<p>Nothing special is happening here. Here is how we can use this code:</p>
+<pre><code>from config import Config
+config = Config(&quot;config.yaml&quot;)
+config
+</code></pre>
+<p>We move dataset parsing code to a separate file:</p>
+<pre><code>%%writefile dataset.py
+import tensorflow as tf
+
+class DatasetReader:
+    def __init__(self, config, path):
+        self.config = config
+        self.path = path
+        defaults = []
+        for feature in self.config.dataset_features:
+            if feature.type  == &quot;int&quot;:
+                defaults.append(tf.constant(0, dtype=tf.int64))
+            elif feature.type == &quot;float&quot;:
+                defaults.append(tf.constant(0.0, dtype=tf.float32))
+            elif feature.type == &quot;string&quot;:
+                defaults.append(tf.constant(&quot;&quot;, dtype=tf.string))
+            else:
+                assert False
+        self.defaults = defaults
+
+    def __call__(self, ctx: tf.distribute.InputContext):
+        batch_size = ctx.get_per_replica_batch_size(
+            self.config.global_batch_size) if ctx else self.config.global_batch_size
+        @tf.function
+        def decode_fn(record_bytes):
+            csv_row = tf.io.decode_csv(record_bytes, self.defaults)
+            parsed_features = {}
+            for i, feature in enumerate(self.config.dataset_features):
+                parsed_features[feature.name] = csv_row[i]
+            features = {}
+            for feature in self.config.model.features:
+                t = parsed_features[feature.name]
+                features[feature.name] = t
+            labels = {
+                &quot;label&quot;: parsed_features[self.config.label]
+            }
+            return (features, labels)
+
+        def make_dataset_fn(path):
+            dataset = tf.data.TextLineDataset([path], compression_type=self.config.compression.upper())
+            dataset = dataset\
+                .shuffle(self.config.shuffle_buffer)\
+                .batch(batch_size, drop_remainder=True)\
+                .repeat(self.config.epochs).map(decode_fn)
+            return dataset
+        filenames = tf.data.Dataset.list_files(self.path, shuffle=True, seed=42)
+        if ctx and ctx.num_input_pipelines &gt; 1:
+            filenames = filenames.shard(ctx.num_input_pipelines, ctx.input_pipeline_id)
+        dataset = filenames.interleave(make_dataset_fn, num_parallel_calls=10, deterministic=False, cycle_length=10)
+        dataset = dataset.prefetch(100)
+        return dataset
+
+def create_dataset(config, strategy, path):
+    dataset_callable = DatasetReader(
+        config=config,
+        path=path
+    )
+    dataset = strategy.distribute_datasets_from_function(
+        dataset_fn=dataset_callable,
+        options=tf.distribute.InputOptions(experimental_fetch_to_device=False),
+    )
+    return dataset
+</code></pre>
+<p>We rewrote the code to use parameters from config instead of hard-coded ones, which includes expected defaults for csv parser.</p>
+<p>We also turned our dataset code into a callable struct - this is a requirement to be able to use it in a distributed strategy.<br />
+This callable is expecting to be called with the following signature:<br />
+<code>def __call__(self, ctx: tf.distribute.InputContext):</code><br />
+<code>ctx</code> will be passed to the call, in case we launch the training in a distributed context. If we do not, there just will be a <code>None</code>, but our code should work still.</p>
+<p><code>batch_size = ctx.get_per_replica_batch_size(...)</code>: in multihost TPU or GPU training under data parallelism, the distribution disposition will look like this: there will be N workers, each reading its own portion of the dataset. One worker reads from the dataset in batches with size <code>batch_size</code>, and gives it to one of its K  devices (TPU cores or GPU devices). The devices then store that batch in the on-device memory, process it independently, but accumulate gradients in sync. Thus, the effective batch size (which might affect training quality, not just speed) will be batch_size * K = global_batch_size. Conveniently, the context provides the function to calculate batch size from global_batch_size, since the information about total device count available to this worker is stored in this context.</p>
+<pre><code>if ctx and ctx.num_input_pipelines &gt; 1:
+    filenames = filenames.shard(ctx.num_input_pipelines, ctx.input_pipeline_id)
+</code></pre>
+<p>Here we do the sharding, again, knowing the total number of workers and current worker id.</p>
+<p><code>dataset = strategy.distribute_datasets_from_function(...)</code> - this call is needed to announce that instead of reading the dataset locally, on the machine that is launching the training, we will be executing this code remotely on multiple workers.
+<code>options=tf.distribute.InputOptions(experimental_fetch_to_device=False)</code>: this fixes the error <code>ValueError: Received input tensor postId which is on a TPU input device /job:worker/replica:0/task:0/device:TPU:0. Input tensors for TPU embeddings must be placed on the CPU. Please ensure that your dataset is prefetching tensors to the host by setting the 'experimental_prefetch_to_device' option of the dataset distribution function. See the documentation of the enqueue method for an example.</code>. I dont quite know what it means.</p>
+<p>Let's test this dataset code:</p>
+<pre><code>import tensorflow as tf
+from dataset import create_dataset
+strategy = tf.distribute.get_strategy()
+dataset = create_dataset(config, strategy, config.train_path)
+for elem in dataset:
+    break
+elem
+</code></pre>
+<p>Our code is getting cleaner! Creating a dataset now takes just 2 lines of code, provided that we use the module that we created earlier. And we can still use it with a local strategy, iterate over the elements, print them out, try to apply some layers to them.</p>
+<h2 id="the-model"><a class="header" href="#the-model">The model</a></h2>
+<pre><code>%%writefile model.py
+import math
+import tensorflow as tf
+import tensorflow_recommenders as tfrs
+
+class BaseModel(tfrs.models.Model):
+    def __init__(self):
+        super().__init__()
+        self.task = tfrs.tasks.Ranking(
+            loss=tf.keras.losses.BinaryCrossentropy(
+                reduction=tf.keras.losses.Reduction.NONE
+            ),
+            metrics=[
+                tf.keras.metrics.BinaryCrossentropy(name=&quot;label-crossentropy&quot;),
+                tf.keras.metrics.AUC(name=&quot;auc&quot;),
+                tf.keras.metrics.AUC(curve=&quot;PR&quot;, name=&quot;pr-auc&quot;),
+                tf.keras.metrics.BinaryAccuracy(name=&quot;accuracy&quot;),
+            ],
+            prediction_metrics=[
+                tf.keras.metrics.Mean(&quot;prediction_mean&quot;),
+            ],
+            label_metrics=[
+                tf.keras.metrics.Mean(&quot;label_mean&quot;)
+            ]
+        )
+    
+    def call(self, inputs):
+        raise NotImplementedError
+
+    def compute_loss(self, inputs, training=False):
+        features, labels = inputs
+        outputs = self(features, training=training)
+        # loss = tf.reduce_mean(label_loss)
+        loss = self.task(labels=labels[&quot;label&quot;], predictions=outputs[&quot;label&quot;])
+        loss = tf.reduce_mean(loss)
+        return loss
+
+class Model(BaseModel):
+    def __init__(self, config):
+        super().__init__()
+        self.config = config
+        self.embedding_optimizer = tf.keras.optimizers.legacy.Adam(learning_rate = config.model.learning_rate)
+        self.optimizer = tf.keras.optimizers.Adam(learning_rate = config.model.learning_rate)
+        self.hashing_layers = {}
+        embedding_layer_feature_config = {}
+        for feature in self.config.model.features:
+            if feature.hash:
+                self.hashing_layers[feature.name] = tf.keras.layers.experimental.preprocessing.Hashing(num_bins=feature.vocab_size)
+            initializer = tf.initializers.TruncatedNormal(
+                mean=0.0, stddev=1 / math.sqrt(feature.embedding_dim)
+            )
+            embedding_layer_feature_config[feature.name] = tf.tpu.experimental.embedding.FeatureConfig(
+                table=tf.tpu.experimental.embedding.TableConfig(
+                vocabulary_size=feature.vocab_size,
+                initializer=initializer,
+                dim=feature.embedding_dim))
+        self.embedding_layer = tfrs.layers.embedding.TPUEmbedding(
+            feature_config=embedding_layer_feature_config,
+            optimizer=self.embedding_optimizer)
+        self.final_activation = tf.keras.layers.Activation('sigmoid')
+        
+
+    def call(self, inputs):
+        features = {}
+        for feature in self.config.model.features:
+            t = inputs[feature.name]
+            if feature.hash:
+                t = self.hashing_layers[feature.name](t)
+            features[feature.name] = t
+        embeddings = self.embedding_layer(features)
+        user_embs = []
+        movie_embs = []
+        for feature in self.config.model.features:
+            embedding = embeddings[feature.name]
+            if feature.belongs_to == &quot;user&quot;:
+                user_embs.append(embedding)
+            elif feature.belongs_to == &quot;movie&quot;:
+                movie_embs.append(embedding)
+            else:
+                assert False
+        user_final = tf.concat(user_embs, axis = 1)
+        movie_final = tf.concat(movie_embs, axis = 1)
+        # last unit of embedding is considered to be bias
+        # out = tf.keras.backend.batch_dot(user_final[:, :-1], post_final[:, :-1]) + user_final[:, -1:] +  post_final[:, -1:]
+        # This tf.slice code helps get read of &quot;WARNING:tensorflow:AutoGraph could not transform ...&quot; warnings produced by the above line
+        # doesn't seem to improve speed though
+        # user_final_emb = tf.slice(user_final, begin=[0, 0], size=[user_final.shape[0],  user_final.shape[1] - 1])
+        # user_final_bias = tf.slice(user_final, begin=[0, user_final.shape[1] - 1], size=[user_final.shape[0],  1])
+        # movie_final_emb = tf.slice(movie_final, begin=[0, 0], size=[movie_final.shape[0],  movie_final.shape[1] - 1])
+        # movie_final_bias = tf.slice(movie_final, begin=[0, movie_final.shape[1] - 1], size=[movie_final.shape[0],  1])
+        user_final_emb = user_final[:,:-1]
+        user_final_bias = user_final[:,-1:]
+        movie_final_emb = movie_final[:,:-1]
+        movie_final_bias = movie_final[:,-1:]
+        out = tf.keras.backend.batch_dot(user_final_emb, movie_final_emb) + user_final_bias + movie_final_bias
+        prediction = self.final_activation(out) 
+        return {
+            &quot;label&quot;: prediction
+        }
+</code></pre>
+<p>Nothing particularly interesting happening here - we just rewrote the code to use the config for parameters/feature names and stuff like that.</p>
+<p>Here is how we can construct the model now:</p>
+<pre><code>from model import Model
+with strategy.scope():
+    model = Model(config)
+    model.compile(model.optimizer, steps_per_execution=10)
+model(elem[0]) # see some model predictions
+</code></pre>
+<h2 id="the-traning-loop"><a class="header" href="#the-traning-loop">The traning loop</a></h2>
+<pre><code>import sys
+import os
+def save_string_gcs(string_object, gcs_dir, filename):
+    string_string = json.dumps(string_object)
+    with open(filename, &quot;w&quot;) as f:
+        f.write(string_string)
+    os.system(f&quot;gsutil -m cp {filename} {gcs_dir}/{filename}&quot;)
+    os.system(f&quot;rm {filename}&quot;)
+
+train_dataset = create_dataset(config, strategy, config.train_path)
+trainval_dataset = create_dataset(config, strategy, config.validate_path)
+eval_dataset = create_dataset(config, strategy, config.validate_path)
+train_steps_per_epoch = config.train_rows // config.global_batch_size
+trainval_steps_per_epoch = config.trainval_rows // config.global_batch_size
+eval_steps_per_epoch = config.eval_rows // config.global_batch_size
+checkpoints_cb = tf.keras.callbacks.ModelCheckpoint(config.save_model_path  + '/checkpoints/',  save_freq = train_steps_per_epoch//3)
+callbacks=[checkpoints_cb]
+history = model.fit(train_dataset, epochs=config.epochs, callbacks=callbacks, steps_per_epoch=train_steps_per_epoch,
+validation_data=trainval_dataset, validation_steps=trainval_steps_per_epoch)
+model.save_weights(config.save_model_path  + '/weights/')
+eval_steps = config.eval_rows // config.global_batch_size
+eval_scores = model.evaluate(eval_dataset, return_dict=True, steps=eval_steps_per_epoch)
+metrics = {}
+metrics[&quot;eval&quot;] = eval_scores
+metrics[&quot;history&quot;] = history.history
+metrics[&quot;args&quot;] = sys.argv
+metrics[&quot;config&quot;] = repr(config)
+save_string_gcs(json.dumps(metrics), config.save_model_path, f&quot;metrics_pretrain.json&quot;)
+</code></pre>
+<p>There are some interesting things here.<br />
+<code>train_steps_per_epoch = config.train_rows // config.global_batch_size</code>: as is typical for neural network training, training is split into several epochs. Training loop does some extra evaluations at the end of every epochs. In our dataset code, we assume that every epoch reads the entire dataset (hence <code>dataset.repeat(epochs)</code>), but that is not necessary. Important thing is that our dataset is limited in size, and that size is not known to the training loop. We have to provide it externally and to do it correcly, otherwise training will fail with &quot;dataset exhausted&quot; error. Steps are measured in batches, so we have to know our original data size (can check it in Bigquery) and divide it by batch size.</p>
+<p><code>checkpoints_cb = tf.keras.callbacks.ModelCheckpoint</code> - this is the callback that will save model weights during the training. We can provide <code>gs://</code> path as directory to save model to.</p>
+<p><code>model.save_weights()</code> - save final model after the tranining</p>
+<p><code>eval_scores = model.evaluate()</code> - do final evaluation on full eval dataset (evaluation on part of the dataset was done during training)</p>
+<p><code>save_string_gcs()</code> - we save training history, final evaluation results, config and run arguments to gcs as well for reproducibility.</p>
+<h2 id="conclusion"><a class="header" href="#conclusion">Conclusion</a></h2>
+<p>By now, we have a complete, neat, configurable code to train our model on CPU on one worker. Next, we will discuss how to launch tranining on TPUs.</p>
+<p>As usual, code for this chapter is available as <a href="https://github.com/mgaiduk/mgaiduk.github.io/blob/main/my-first-book/src/code/chapter5/tidying_up.ipynb">jupyter notebook</a>. You should also checkout the <a href="https://github.com/mgaiduk/mgaiduk.github.io/blob/main/my-first-book/src/code/chapter5/playground.ipynb">jupyter notebook playground</a> that allows you to load dataset and models from the module files that we wrote, and <a href="https://github.com/mgaiduk/mgaiduk.github.io/blob/main/my-first-book/src/code/chapter5/train.py">train script</a> that you can launch from command line to train the model.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_4.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="chapter_6.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_4.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="chapter_6.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
