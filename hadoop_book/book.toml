@@ -1,0 +1,6 @@
+[book]
+authors = ["mgaiduk"]
+language = "en"
+multilingual = false
+src = "src"
+title = "hadoop_book"
