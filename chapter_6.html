@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 6. Training on TPU - Tensorflow for recsys</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1. What is this book about</a></li><li class="chapter-item expanded "><a href="chapter_2.html"><strong aria-hidden="true">2.</strong> Chapter 2. First glance at the data</a></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Chapter 3. Proper input pipeline and the model</a></li><li class="chapter-item expanded "><a href="chapter_4.html"><strong aria-hidden="true">4.</strong> Chapter 4. The model</a></li><li class="chapter-item expanded "><a href="chapter_5.html"><strong aria-hidden="true">5.</strong> Chapter 5. Tidying up</a></li><li class="chapter-item expanded "><a href="chapter_6.html" class="active"><strong aria-hidden="true">6.</strong> Chapter 6. Training on TPU</a></li><li class="chapter-item expanded "><a href="chapter_7.html"><strong aria-hidden="true">7.</strong> Chapter 7. LazyAdam, or some hacks for training speed</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Tensorflow for recsys</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-6-training-on-tpu"><a class="header" href="#chapter-6-training-on-tpu">Chapter 6. Training on TPU</a></h1>
+<h2 id="what-are-tpus"><a class="header" href="#what-are-tpus">What are TPUs?</a></h2>
+<p>TPUs are ASICs from Google designed specifically for neural networks training. Processing cores are connected in such a way as to allow typical model training workflows, like matrix multiplication, to be done quickly without intermediate memory reads and writes. In addition, worker node was designed with typical training task in mind, and so it has A LOT OF MEMORY (which is a big problem for GPUs).</p>
+<p>In addition, TPUs are very expensive. They do allow you to scale up your training in some cases, like deep neural network training. In other cases, they are powerful but not cost-effective. One such case happens to be collaborative filtering - the model itself is quite shallow in such a case, training speed is bounded by input pipeline throughput rather then actual training compute. It is, however, handy to be able to quickly try them out and do the experiment yourself.</p>
+<p>Luckily, we wrote our code in such a way as to make it easy to apply on TPUs.</p>
+<p>First, do some modifications to our training code:</p>
+<pre><code># train.py
+parser = argparse.ArgumentParser()
+parser.add_argument(&quot;-c&quot;, &quot;--config&quot;, type=str, required=True, help=&quot;Path to config&quot;)
+parser.add_argument(&quot;--tpu_name&quot;, type=str)
+parser.add_argument(&quot;--tpu_zone&quot;, type=str)
+args = parser.parse_args()
+config = Config(args.config)
+if args.tpu_name:
+    assert args.tpu_zone
+    handle = tf.distribute.cluster_resolver.TPUClusterResolver(tpu=args.tpu_name, zone=args.tpu_zone)
+    tpu = handle.connect(args.tpu_name, args.tpu_zone)
+    strategy = tf.distribute.TPUStrategy(tpu)
+    tf.tpu.experimental.initialize_tpu_system(handle)
+    print(&quot;num_replicas_in_sync: &quot;, strategy.num_replicas_in_sync)
+else:
+    strategy = tf.distribute.get_strategy()
+</code></pre>
+<p>We read tpu_name and tpu_zone from command line arguments, initialize a cluster resolver - Python object that tries to communicate to TPUs over network. Then we initialize our distributed TPUStrategy, and run our training code as normal.</p>
+<p>I also had to get rid of <code>tf.keras.layers.experimental.preprocessing.Hashing</code> layer in the model, replacing it with <code>tf.strings.to_hash_bucket</code> step in dataset preprocessing instead, because I was getting the following error:</p>
+<pre><code>ValueError: Received input tensor postId which is the output of op model/hashing_1/hash (type StringToHashBucketFast) which does not have the `_tpu_input_identity` attr. Please ensure that the inputs to this layer are taken directly from the arguments of the function called by strategy.run. Two possible causes are: dynamic batch size support or you are using a keras layer and are not passing tensors which match the dtype of the `tf.keras.Input`s.If you are triggering dynamic batch size support, you can disable it by passing tf.distribute.RunOptions(experimental_enable_dynamic_batch_size=False) to the options argument of strategy.run().
+</code></pre>
+<p>Now, run this code to create a tpu:</p>
+<pre><code>export TPU_ZONE=europe-west4-a
+# WARNING! Billable and expensive
+&gt; yes | gcloud beta compute tpus create mgaiduk_recall1 --zone=$TPU_ZONE --version=2.11 --accelerator-type=v3-8 --project=my-first-project;
+# Run this after the training to make sure you delete your TPU and stop receiving bills for it
+#&gt; yes | gcloud compute tpus delete mgaiduk_recall1 --zone=$TPU_ZONE --project=my-first-project|| true
+</code></pre>
+<p>This might require some additional setup - registering, quota handling and stuff like that, which I will not describe here.</p>
+<p>Finally, run our training code:</p>
+<pre><code>python3 train.py --tpu_name mgaiduk_recall1 --tpu_zone $TPU_ZONE -c config.yaml
+</code></pre>
+<p>And don't forget to shut down the tpu afterwards:</p>
+<pre><code>gcloud compute tpus delete mgaiduk_recall1 --zone=$TPU_ZONE --project=maximal-furnace-783
+</code></pre>
+<p>And that's it! Training code with all necessary modifications is available at <a href="https://github.com/mgaiduk/mgaiduk.github.io/tree/main/my-first-book/src/code/chapter6">github</a></p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_5.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="chapter_7.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_5.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="chapter_7.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>

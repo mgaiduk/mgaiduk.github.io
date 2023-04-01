@@ -1,0 +1,284 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js light">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Chapter 2. First glance at the data - Tensorflow for recsys</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body>
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('light')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded "><a href="chapter_1.html"><strong aria-hidden="true">1.</strong> Chapter 1. What is this book about</a></li><li class="chapter-item expanded "><a href="chapter_2.html" class="active"><strong aria-hidden="true">2.</strong> Chapter 2. First glance at the data</a></li><li class="chapter-item expanded "><a href="chapter_3.html"><strong aria-hidden="true">3.</strong> Chapter 3. Proper input pipeline and the model</a></li><li class="chapter-item expanded "><a href="chapter_4.html"><strong aria-hidden="true">4.</strong> Chapter 4. The model</a></li><li class="chapter-item expanded "><a href="chapter_5.html"><strong aria-hidden="true">5.</strong> Chapter 5. Tidying up</a></li><li class="chapter-item expanded "><a href="chapter_6.html"><strong aria-hidden="true">6.</strong> Chapter 6. Training on TPU</a></li><li class="chapter-item expanded "><a href="chapter_7.html"><strong aria-hidden="true">7.</strong> Chapter 7. LazyAdam, or some hacks for training speed</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Tensorflow for recsys</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="chapter-2-first-glance-at-the-data"><a class="header" href="#chapter-2-first-glance-at-the-data">Chapter 2. First glance at the data</a></h1>
+<p>To make the code reproducible, we will be using public dataset. I've decided to go with Movielens (https://grouplens.org/datasets/movielens/), although it is not available in bigquery. We will upload it to bq by hand.</p>
+<h2 id="getting-movielens-data"><a class="header" href="#getting-movielens-data">Getting movielens data</a></h2>
+<p>At the time of writing, movielens data is available to download at https://grouplens.org/datasets/movielens/.<br />
+Inside the zip archive, there is a file called ratings.csv with the following content:</p>
+<pre><code>userId,movieId,rating,timestamp
+1,296,5.0,1147880044
+...
+</code></pre>
+<p>Which is just what we needed! Now, let's load it to bq.<br />
+First, we need to load it to gcs:</p>
+<pre><code>gsutil cp ratings.csv &quot;gs://mgaiduk/tmp/ratings&quot;
+</code></pre>
+<p>Then, we upload it to bq:</p>
+<pre><code>bq load \
+--autodetect \
+--source_format=CSV \
+mgaiduk.ratings \
+&quot;gs://mgaiduk/tmp/ratings&quot;
+</code></pre>
+<p>Finally, do a quick select to validate that the data is there and to see how it looks like:</p>
+<pre><code>-- in bigquery console
+SELECT * FROM `mgaiduk.ratings` LIMIT 1000
+</code></pre>
+<p>This is the result:
+|Row|userId|movideId|rating|timestamp|
+|---|------|--------|------|---------|
+|1  |    70|    3948|2.0   |1255219128|
+|2  |    188|    653|2.0   |1025333400|
+|3  |    243|    103249|2.0   |1464280162|
+Preparation is done, and now the data looks like what you'd expect in a big tech company residing in GCP: a bigquery table. Now let's talk about how to actually load it into Tensorflow</p>
+<h2 id="bq-to-tensorflow"><a class="header" href="#bq-to-tensorflow">BQ to tensorflow?</a></h2>
+<p>All operations in Tensorflow are performed on Tensors. A tensor has to reside in memory. There are 2 challenges for that.</p>
+<p>First of all, python code is very slow. Tensorflow intrinsics are written in something else (C?). For user pipelines, they provide a <code>@tf.function</code> decorator and other facilities that do approximately the following: they look into your python code, turn it into some intrinsic, optimized representation, and compile it to make it really fast. The only problem is - it works only for code working with tensors. But you have to get your data and turn it into tensors somehow!<br />
+Second problem is scaling up. Entire dataset will not fit in memory or on disk on a single machine. We will need to get it from some scalable storage and parse on-the-fly. We will want our models training on many servers, either on several TPU pods or several GPU workers. Therefore, we need to write the code in such a way that each worker will load its own portion of the dataset.</p>
+<p>In the past, I've tried different approaches of doing that: loading an entire file into memory, then turning into tensors in one go; parsing input line by line in python code and passing it to Tensorflow through a &quot;dataset from generator&quot; feature. Neither seemed to be effective or convenient - &quot;dataset from generator&quot; api is exceptionally unintuitive, and you have to call a lot of python code in a cycle before converting data to tensors, which makes it slow and ineffectve. One solution that I find both easy and effective is to use either <a href="https://www.tensorflow.org/api_docs/python/tf/data/TFRecordDataset">tf.data.TFRecordDataset</a> or <a href="https://www.tensorflow.org/api_docs/python/tf/data/TextLineDataset">tf.data.TextLineDataset</a> that allow you to create a dataset (thus solving the initial &quot;bootstrap&quot; problem of getting your data into tensors somehow!) using filename or even a file pattern for local filesystem or GCS. GCS one is excatly what we need for future scalable solutions!</p>
+<p>Tensorflow Datasets API provides only 2 file formats for easy data loading: TextLineDataset and TFRecordDataset. Other solutions (like parsing Parquet files) seem to also be available, but they are less popular, sometimes have experimental APIs, and, at a first glance, are not made as convenient as the first two to use in Tensorflow. So we will stick to those two in this book. </p>
+<h3 id="getting-data-from-bq-to-gcs---csv"><a class="header" href="#getting-data-from-bq-to-gcs---csv">Getting data from BQ to GCS - CSV</a></h3>
+<p>Let's see how we can get them from BQ to gcs.</p>
+<p>Native extraction API, available through &quot;export&quot; tab in BQ UI, or <code>bq extract</code> command line tool, has following formats: CSV, NEWLINE_DELIMITED_JSON, AVRO, PARQUET. Avro and Parquet create binary files that could not be parsed from Tensorflow with the dataset API functions that we agreed on. And there is no TFRecord here - we will have to resort to Dataflow Templates to do that ) But that is to be expected - TFRecord is a low-popularity, very specific format, and its not like Tensorflow and Bigquery were made by the same company.</p>
+<p>We are left with CSV and JSON. CSV is actually pretty good, I've seen it used at large scale in production. Its downside is that it is a text format, which will bloat the size of numbers. It is a &quot;plain&quot; format, which won't work out of the box for arrays or nested structures. Upside is that it doesn't store anything extra, like labels per each record (json and tfrecord both do that). It is also human-readable, so it will be possible to check the data out with your own eyes.<br />
+JSON is a bit more bloated, with labels per each row; but it makes it possible to store nested structures and arrays.</p>
+<p>Here is how to export data from bq to gcs:</p>
+<pre><code>bq extract --noprint_header --destination_format CSV --compression GZIP mgaiduk.ratings &quot;gs://mgaiduk-us-central1/ratings/csv_gzip/part*&quot;
+</code></pre>
+<p>There are some interesting details here. First of all, here we are using &quot;native&quot; export utility, which has access to private datastore api not available to general public. It is faster and cheaper then the alternatives (like dataflow), takes mere minutes for petabyte datasets. However, using this way limits us to format options described above - CSV or JSON.</p>
+<p>Exported files represent a sharded gcs file: </p>
+<pre><code>part000000000000	12.1 MB	application/octet-stream	Mar 3, 2023, 1:19:15 PM	Standard	Mar 3, 2023, 1:19:15 PM	Not public	—	
+Google-managed key
+—			
+part000000000001	12.1 MB	application/octet-stream	Mar 3, 2023, 1:19:14 PM	Standard	Mar 3, 2023, 1:19:14 PM	Not public	—	
+Google-managed key
+—			
+part000000000002	12.1 MB	application/octet-stream	Mar 3, 2023, 1:19:13 PM	Standard	Mar 3, 2023, 1:19:13 PM	Not public	—	
+Google-managed key
+—	
+</code></pre>
+<p>Which makes it quite convenient to work with, especially in ditributed training setups.</p>
+<p>We do not extract headers. Having to skip 1 line from each file is, again, not quite convenient in distributed training setups.</p>
+<p>We use GZIP compression, which is optional, of course. It is supported natively by Tensorflow, and helps partially mitigate the bloat we discussed above. It should be a trade-off between network and storage cost and CPU spent on decompression; whether or not it actually helps speed up the training will be clear from later chapters, when we will run some experiments.</p>
+<p>Finally, as can be seen from the bucket name, it is located in a specific region - <code>mgaiduk-us-central1</code>. It is important to track data locality, and to launch tranining in the same region where the data is located. It helps both with input pipeline throughput and network costs.</p>
+<h3 id="bq-to-gcs-tfrecords-using-dataflow"><a class="header" href="#bq-to-gcs-tfrecords-using-dataflow">BQ to GCS TFRecords using dataflow</a></h3>
+<p>Another alternative to native BQ export is to use Dataflow. The idea is simple: launch a bunch of dataflow workers that will grab data from Bigquery, convert to a desired format, and write it to GCS.</p>
+<p>Unlike native export, this doesn't allow workers to use private storage API, so the export will be much slower. There is also a HUGE overhead in time and costs for launching the dataflow job: you have to wait for all the workers to be created and start doing their job; you will not receive any feedback in case something goes wrong, and will have to wait for all the workers to start up, do some retries, and then fail. Typically, on a petabyte of data, the job takes a few hours, and if there are errors in the configuration, the job will fail within half an hour. You also have to pay for worker cpu and other excess resources, which makes it much more costly then native BQ export.<br />
+The actual export format here can be anything we want, but Google provides a set of templates with some of the most popular formats already suported, including TFRecords: https://cloud.google.com/dataflow/docs/guides/templates/provided-batch.<br />
+I launch it from the UI, because I just couldn't understand how to write an SQL query in a parameter list in command line and not have it complain about syntax. Sadly, Google does not provide any examples on how to do that.</p>
+<p>Another big problem with this approach is that it is error-prone. If one of the fields is nullable in the table, and your input data pipeline doesn't expect that - you will spend an entire day (and quite a few hundred bucks!) collecting the data only to learn that you have to fix the problem and do it all over again. If your table format is not supported by the template (say, you have nested structures), your job will run for half an hour before failing. So my advice here is - first test everything, including model training in the final setup - on a sample of data, say, first 100k rows, then collect the entire thing.</p>
+<p>TFRecordDataset and TFRecords were designed specifically for Tensorflow. It is a protobuf-based, binary format, which means that there is no bloat from textual representation, and parsing is faster. However, TFRecords save labels for every row, as well as some protobuf metadata. For our example - userId,movieId,rating,timestamp - this makes TFRecord dataset be actually bigger in size then CSV. We shall see if easier parsing makes it worthwile.</p>
+<h2 id="look-at-the-data"><a class="header" href="#look-at-the-data">Look at the data</a></h2>
+<p>The data is now in GCS, where it will be stored for all our training needs. Now let's have a first glance at the data and on how to actually load it into tensorflow:</p>
+<pre><code>import tensorflow as tf
+tf.__version__
+# csv version
+dataset = tf.data.TextLineDataset([&quot;gs://mgaiduk-us-central1/ratings/csv_gzip/part000000000000&quot;], compression_type=&quot;GZIP&quot;)
+for line in dataset:
+    break
+print(line)
+</code></pre>
+<p><code>tf.Tensor(b'70,3948,2,1255219128', shape=(), dtype=string)</code></p>
+<p>As promiseed, parsing the data is very easy. We do the parsing in native Tensorflow function, so no slow python for loops. Output is the dataset with 1 row yielding one csv string tensor. We will need to parse it further to actually use it in our model; but it is already a tensor, so every parsing done on it will be optimized with Tensorflow utilities.</p>
+<pre><code># tfrecord version
+dataset2 = tf.data.TFRecordDataset([&quot;gs://mgaiduk-us-central1/ratings/tfrecord/train/output-00000-of-00012.tfrecord&quot;])
+for line in dataset2:
+    break
+print(line)
+</code></pre>
+<p><code>tf.Tensor(b'\n:\n\x11\n\x06userId\x12\x07\x1a\x05\n\x03\xf3\x9d\x03\n\x11\n\x07movieId\x12\x06\x1a\x04\n\x02\xca\x15\n\x12\n\x06rating\x12\x08\x12\x06\n\x04\x00\x00\x80@', shape=(), dtype=string)</code></p>
+<p>Code examples are also available as <a href="https://github.com/mgaiduk/mgaiduk.github.io/blob/main/my-first-book/src/code/chapter2/data_first_glance.ipynb">jupyter notebook</a>.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="chapter_1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next" href="chapter_3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="chapter_1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next" href="chapter_3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
